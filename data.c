@@ -1,0 +1,183 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <string.h>
+#include "data.h"
+
+
+
+FILE *fptr;
+
+// The character we look for when parsing
+const char separator[2] = "|"; // use #Define
+
+// These are the for storing the data from the files and later turned into a DataEntry struct
+int tempID;
+char* tempDate;
+char* tempType;
+char* tempSubType;
+char* tempDesc;
+double tempAmount;
+
+// This counter is used to figure out what collumn we are at for parsing the file
+int counter;                            
+
+
+// These are the Headers for the doubly linked list
+Node* start;
+Node* end;
+
+
+// Create the head and tail of the Linked List
+void createLinkedList(){
+
+    start = (Node*) malloc(sizeof(Node)); 
+    end = (Node*) malloc(sizeof(Node)); 
+
+    // Check for memory allocation errors
+    if(!start || !end){
+        exit(1);
+    }
+
+    // Set the next node for start to be end
+    start->next = end;
+    start->previous = NULL;
+
+    // Set the previous node for end to be start
+    end->previous = start;
+    end->next = NULL;
+}
+
+// This function will a DataEntry object with the information passed into it
+DataEntry createDataEntry(int id, char *date, char* entryType, char *entrySubType, char *entryDesc, double amount){
+
+    DataEntry newEntry;
+    newEntry.entryID = id;
+    newEntry.date = strdup(date);
+    newEntry.entryType = strdup(entryType);
+    newEntry.entrySubType = strdup(entrySubType);
+    newEntry.entryDescription = strdup(entryDesc);
+    newEntry.amount = amount;
+
+    return newEntry;
+}
+
+// This function will create a Node for the linked list, containing a new DataEntry object
+Node* createNode(int id, char *date, char *entryType, char *entrySubType, char *entryDesc, double amount){
+    Node *newNode = (Node*) malloc(sizeof(Node));
+    if(!newNode){
+        exit(1);
+    }
+
+    newNode->dataItem = createDataEntry(id, date, entryType, entrySubType, entryDesc, amount);
+    newNode->next = NULL;
+    newNode->previous = NULL;
+
+    return newNode;
+}
+
+
+// This function will insert a new Node before the end header
+void push(Node* newEntry){
+
+    // Place the Node before the end header, before the new Node
+    newEntry->previous = end->previous;
+
+    // Place the end right after the new Node
+    newEntry->next = end;
+
+    // Replace the old Node's Next to be the New Node
+    end->previous->next = newEntry;
+
+    // Replace the Node stored in the end header to be the new Node
+    end->previous = newEntry;
+
+}
+
+// This function will print out all the fields in a Node
+void printNode(Node* newEntry){
+    printf("ID: %d \n", newEntry->dataItem.entryID);
+    printf("Date: %s \n", newEntry->dataItem.date);
+    printf("Type: %s \n", newEntry->dataItem.entryType);
+    printf("SubType: %s \n", newEntry->dataItem.entrySubType);
+    printf("Description: %s \n", newEntry->dataItem.entryDescription);
+    printf("Amount: %.2f \n", newEntry->dataItem.amount);
+}
+
+// This function will print out all of the Nodes in the list
+void printData(){
+   Node *temp = start;
+
+    while(temp){
+        printNode(temp);
+        printf("-------------------------------\n");
+
+        temp = temp->next;
+    }
+}
+
+
+
+// This function will take a row in the data file and split each collumn into its own separate field, and add it to the linked list
+int parseData(char *fileLine){
+    counter = 0;
+    char *res;
+
+    res = strtok(fileLine, separator);
+    while (res != NULL){
+
+        switch (counter)
+        {
+        case 0:                         // ID
+            tempID = atoi(res);
+            break;
+        case 1:                         // Date
+            tempDate = res;
+            break;
+        case 2:                         // Type
+            tempType = res;
+            break;
+        case 3:                         // Subtype
+            tempSubType = res;
+            break;
+        case 4:                         // Description
+            tempDesc = res;
+            break;
+        case 5:                         // Amount
+            tempAmount = atof(res);
+            break;
+        default:                        // End of the line
+            break;
+        }
+
+        counter = counter + 1;
+        res = strtok(NULL, separator);
+    }
+
+    Node* tempNode = createNode(tempID, tempDate, tempType, tempSubType, tempDesc, tempAmount);
+    push(tempNode);
+
+    return 0;
+}
+
+
+
+// Takes in a file name and read through it line by line
+int getData(char * fileName){
+    createLinkedList();
+
+    fptr = fopen(fileName, "r");
+    char myString[200];
+
+    while(fgets(myString, 100, fptr)){
+        parseData(myString);
+    }
+    
+    fclose(fptr);
+    return 0;
+}
+
+
+
+
+

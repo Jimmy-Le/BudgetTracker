@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-I.
-DEPS = main.h budget.h
+DEPS = main.h budget.h data.h
 OBJ = main.o budget.o data.o ordering.o
 
 %.o: %.c $(DEPS)
