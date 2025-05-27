@@ -24,7 +24,7 @@ Node* getStart();
 Node* getEnd();
 void push(Node *newEntry);
 void printHeader();
-void printNode(Node *newEntry);
+void printNode(Node *newEntry, int mode);
 void printData();
 int parseData(char *fileName);
 int getData(char *fileName);

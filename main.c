@@ -14,11 +14,16 @@
 
 
 int main(int argc, char * argv[]) {
+    int programOver = 0;
     // get data (from command line) (from data.c)
     getData(argv[1]);
     system("clear");
-    callChoice(getUserInput());
+    while(programOver == 0){
+        system("clear");
+        programOver = callChoice(getUserInput());
+    }
     
+
     // printData();
     return 0;
 }

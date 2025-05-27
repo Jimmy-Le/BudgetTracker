@@ -43,6 +43,7 @@ int getUserInput(){
 }
 
 
+// This function will calculate the total income, expenses, wants and needs as well as the net balance
 void getExpenseDistribution(){
     double totalIncome = 0;
     double totalExpenses = 0;
@@ -88,6 +89,50 @@ void getExpenseDistribution(){
 
 
 
+Node* getNodeIDChoice(){
+
+    Node* nodeToModify = getStart();
+    // Get user input for ID
+    validChoice = scanf("%d", &choice);
+
+    // Making sure that the input is an Integer
+    if(validChoice != 1){
+        printf("Invalid input\n");
+        return nodeToModify;
+
+    } else {
+        Node* temp = getStart();
+        while(temp){
+            // Making sure to skip printing the header nodes
+            if (temp->next == NULL ||temp->previous == NULL){
+            }else if (temp->dataItem.entryID == choice){
+
+                nodeToModify = temp;
+            }
+            temp = temp->next;
+        }
+        return nodeToModify;
+    }
+}
+
+
+
+
+int modifyEntry(){
+    printData();
+
+
+    printf("\nEnter ID of entry to modify: ");
+
+    Node* nodeToModify = getNodeIDChoice();
+    if(nodeToModify->previous == NULL){
+        // DO ERROR TODO
+        return 1;
+    }
+    printf("\nCurrent Details: \n");
+    printNode(nodeToModify, 1);
+
+}
 
 
 
@@ -95,8 +140,7 @@ void getExpenseDistribution(){
 
 
 
-
-
+// This function will call other functions depending on the user choice
 int callChoice(int chosenNumber){
     system("clear");
     switch (chosenNumber){
@@ -113,16 +157,25 @@ int callChoice(int chosenNumber){
         printf("number is: %d \n", chosenNumber );
         break;
     case 5:
-        printf("number is: %d \n", chosenNumber );
+        modifyEntry(); 
         break;
     case 6:
         printf("number is: %d \n", chosenNumber );
         break;
-    case 7:
     default:
-        printf("Goodbye and thanks for using our budget tracker app!!!\n");
+        printf("Invalid Input \n");
+    case 7:
+        printf("\nGoodbye and thanks for using our budget tracker app!!!\n\n");
+        return 1;
         break;
     }
+    
+    char enterKey;
+    printf("\n Press any key then ENTER to continue: ");
+    scanf("%s", &enterKey);
+
+    return 0;
+
 
 
 }

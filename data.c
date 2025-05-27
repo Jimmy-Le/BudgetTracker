@@ -103,6 +103,8 @@ void push(Node* newEntry){
 }
 
 void printHeader(){
+    printf("Finances Summary \n");
+    printf("================== \n \n");
     printf("%-5s %-12s %-10s %-12s %-20s %-10s \n", 
         "ID",
         "Date",
@@ -116,16 +118,31 @@ void printHeader(){
 }
 
 // This function will print out all the fields in a Node
-void printNode(Node* newEntry){
+// There are modes to choose from
+// 0: Print all in a row
+// 1: Print in a line
+void printNode(Node* newEntry, int mode){
 
-    printf("%-5d %-12s %-10s %-12s %-20s $%-10.2f \n", 
-        newEntry->dataItem.entryID, 
-        newEntry->dataItem.date,
-        newEntry->dataItem.entryType,
-        newEntry->dataItem.entrySubType,
-        newEntry->dataItem.entryDescription,
-        newEntry->dataItem.amount
-    );
+    if(mode == 0){
+        printf("%-5d %-12s %-10s %-12s %-20s $%-10.2f \n", 
+            newEntry->dataItem.entryID, 
+            newEntry->dataItem.date,
+            newEntry->dataItem.entryType,
+            newEntry->dataItem.entrySubType,
+            newEntry->dataItem.entryDescription,
+            newEntry->dataItem.amount
+        ); 
+    } else if (mode == 1){
+        printf("ID: %d \n", newEntry->dataItem.entryID);
+        printf("Date: %s \n", newEntry->dataItem.date);
+        printf("Type: %s \n", newEntry->dataItem.entryType);
+        printf("Category: %s \n", newEntry->dataItem.entrySubType);
+        printf("Description: %s \n", newEntry->dataItem.entryDescription);
+        printf("Amount: $%.2f \n \n", newEntry->dataItem.amount);
+
+    }
+    
+    
 
 }
 
@@ -139,7 +156,7 @@ void printData(){
         // Making sure to skip printing the header nodes
         if (temp->next == NULL ||temp->previous == NULL){
         }else{
-            printNode(temp);
+            printNode(temp, 0);
         }
 
         temp = temp->next;
@@ -234,6 +251,8 @@ void freeNode(Node *node){
 }
 
 
-
+void modifyFileEntry(){
+    
+}
 
 
