@@ -94,23 +94,45 @@ void push(Node* newEntry){
 
 }
 
+void printHeader(){
+    printf("%-5s %-12s %-10s %-12s %-20s %-10s \n", 
+        "ID",
+        "Date",
+        "Type",
+        "Category",
+        "Description",
+        "Amount"
+
+    );
+    printf("---------------------------------------------------------------------------\n");
+}
+
 // This function will print out all the fields in a Node
 void printNode(Node* newEntry){
-    printf("ID: %d \n", newEntry->dataItem.entryID);
-    printf("Date: %s \n", newEntry->dataItem.date);
-    printf("Type: %s \n", newEntry->dataItem.entryType);
-    printf("SubType: %s \n", newEntry->dataItem.entrySubType);
-    printf("Description: %s \n", newEntry->dataItem.entryDescription);
-    printf("Amount: %.2f \n", newEntry->dataItem.amount);
+
+    printf("%-5d %-12s %-10s %-12s %-20s $%-10.2f \n", 
+        newEntry->dataItem.entryID, 
+        newEntry->dataItem.date,
+        newEntry->dataItem.entryType,
+        newEntry->dataItem.entrySubType,
+        newEntry->dataItem.entryDescription,
+        newEntry->dataItem.amount
+    );
+
 }
 
 // This function will print out all of the Nodes in the list
 void printData(){
    Node *temp = start;
 
+
+    printHeader();
     while(temp){
-        printNode(temp);
-        printf("-------------------------------\n");
+        // Making sure to skip printing the header nodes
+        if (temp->next == NULL ||temp->previous == NULL){
+        }else{
+            printNode(temp);
+        }
 
         temp = temp->next;
     }
@@ -167,6 +189,10 @@ int getData(char * fileName){
     createLinkedList();
 
     fptr = fopen(fileName, "r");
+    if (!fptr){
+        perror("Invalid File Name");
+        exit(1);
+    }
     char myString[200];
 
     while(fgets(myString, 100, fptr)){
@@ -175,6 +201,27 @@ int getData(char * fileName){
     
     fclose(fptr);
     return 0;
+}
+
+// This function free up dynamically allocated memory for all the char array in a DataEntry struct
+void freeData(DataEntry *data){
+    free(data->date);
+    free(data->entryType);
+    free(data->entrySubType);
+    free(data->entryDescription);
+}
+
+
+// This function will free up allocated memory from a Node, including its data
+void freeNode(Node *node){
+    // Make sure that the node isn't already freed
+    if (!node){
+        return;
+    }
+    freeData(&node->dataItem);
+
+    free(node);
+
 }
 
 

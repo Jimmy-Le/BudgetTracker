@@ -26,5 +26,6 @@ void printNode(Node *newEntry);
 void printData();
 int parseData(char *fileName);
 int getData(char *fileName);
-
+void freeData(DataEntry *data);
+void freeNode(Node *node);
 #endif
