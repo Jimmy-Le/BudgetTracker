@@ -18,10 +18,12 @@ typedef struct Node {
     struct Node *previous;
 }Node;
 
-void createLinkedList();
-DataEntry createDataEntry(int id, char *date, char* entryType, char *entrySubType, char *entryDesc, double amount);
+// Get rid of unused
 Node* createNode(int id, char *date, char* entryType, char *entrySubType, char *entryDesc, double amount);
+Node* getStart();
+Node* getEnd();
 void push(Node *newEntry);
+void printHeader();
 void printNode(Node *newEntry);
 void printData();
 int parseData(char *fileName);

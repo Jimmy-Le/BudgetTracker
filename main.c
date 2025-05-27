@@ -15,8 +15,10 @@
 
 int main(int argc, char * argv[]) {
     // get data (from command line) (from data.c)
-    // callChoice(getUserInput());
     getData(argv[1]);
-    printData();
+    system("clear");
+    callChoice(getUserInput());
+    
+    // printData();
     return 0;
 }

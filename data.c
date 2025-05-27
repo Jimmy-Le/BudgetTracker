@@ -28,6 +28,14 @@ Node* start;
 Node* end;
 
 
+Node* getStart(){
+    return start;
+}
+
+Node* getEnd(){
+    return end;
+}
+
 // Create the head and tail of the Linked List
 void createLinkedList(){
 
@@ -136,6 +144,7 @@ void printData(){
 
         temp = temp->next;
     }
+    printf("\n");
 }
 
 
