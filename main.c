@@ -20,7 +20,8 @@ int main(int argc, char * argv[]) {
     system("clear");
     while(programOver == 0){
         system("clear");
-        programOver = callChoice(getUserInput());
+        printMenu();
+        programOver = callChoice(getUserInput(1, 7));
     }
     
 

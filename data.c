@@ -22,6 +22,8 @@ double tempAmount;
 // This counter is used to figure out what collumn we are at for parsing the file
 int counter;                            
 
+// Save the filename
+char* financeFilename;
 
 // These are the Headers for the doubly linked list
 Node* start;
@@ -103,8 +105,6 @@ void push(Node* newEntry){
 }
 
 void printHeader(){
-    printf("Finances Summary \n");
-    printf("================== \n \n");
     printf("%-5s %-12s %-10s %-12s %-20s %-10s \n", 
         "ID",
         "Date",
@@ -150,7 +150,8 @@ void printNode(Node* newEntry, int mode){
 void printData(){
    Node *temp = start;
 
-
+    printf("Finances Summary \n");
+    printf("================== \n \n");
     printHeader();
     while(temp){
         // Making sure to skip printing the header nodes
@@ -212,6 +213,8 @@ int parseData(char *fileLine){
 
 // Takes in a file name and read through it line by line
 int getData(char * fileName){
+    financeFilename = fileName;
+
     createLinkedList();
 
     fptr = fopen(fileName, "r");
@@ -250,9 +253,58 @@ void freeNode(Node *node){
 
 }
 
+char* convertBackToFile(Node *node){
+    int totalSize = sizeof(node->dataItem.entryID) 
+    + sizeof(node->dataItem.date) 
+    + sizeof(node->dataItem.entryType) 
+    + sizeof(node->dataItem.entrySubType)
+    + sizeof(node->dataItem.entryDescription) 
+    + sizeof(node->dataItem.amount) 
+    + 8; // 5 pipes, 2 for new line (in case of windows) and 1 end terminal character
 
-void modifyFileEntry(){
+    char *newLine = malloc(totalSize);
+
+    sprintf(newLine, "%d|%s|%s|%s|%s|%0.2f\n",
+        node->dataItem.entryID,
+        node->dataItem.date,
+        node->dataItem.entryType,
+        node->dataItem.entrySubType,
+        node->dataItem.entryDescription,
+        node->dataItem.amount
+    );
+    return (newLine);
     
+}
+
+
+// Updates the file based on the given mode
+// Mode "a": add new entry to the list
+// Mode "w": update the entire file with new modified entry
+int updateFile(char *mode){
+
+    fptr = fopen(financeFilename, mode);
+    if (!fptr){
+        perror("Invalid File Name");
+        exit(1);
+    }
+    
+    Node *temp = getStart();
+    while(temp){
+        // Making sure to skip printing the header nodes
+        if (temp->next == NULL ||temp->previous == NULL){
+        }else{
+            char* newLine = convertBackToFile(temp);
+            if(newLine){
+                fprintf(fptr, "%s", newLine);
+                free(newLine);
+                newLine = NULL;
+            }
+        }
+        temp = temp->next;
+    }
+    
+    fclose(fptr);
+    return 0;
 }
 
 

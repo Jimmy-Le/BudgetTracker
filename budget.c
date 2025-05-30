@@ -28,12 +28,14 @@ int printMenu() {
 
 // Get an input from the user and return their choice
 // if the choice is invalid, return 0
-int getUserInput(){
+// bottom: the lower bound limit of the input
+// top: the upper bound limit of the input
+int getUserInput(int bottom, int top){
 
-    printMenu();
+    // printMenu();
     validChoice = scanf("%d", &choice);
 
-    if(validChoice != 1 || choice < 1 || choice > 7){
+    if(validChoice != 1 || choice < bottom || choice > top){
         system("clear");
 
         printf("Invalid input\n");
@@ -132,10 +134,96 @@ int modifyEntry(){
     printf("\nCurrent Details: \n");
     printNode(nodeToModify, 1);
 
+    printf("What would you like to modify?\n");
+    printf("1. Date\n");
+    printf("2. Amount\n");
+    printf("Choice: ");
+    choice = getUserInput(1,2);
+
+    if (choice == 1){
+        int newYear;
+        int newMonth;
+        int newDay;
+        printf("\nEnter new year (YYYY): ");
+        validChoice = scanf("%d",&newYear);
+
+        printf("\nEnter new month (MM): ");
+        validChoice = scanf("%d",&newMonth);
+
+        printf("\nEnter new day (DD): ");
+        validChoice = scanf("%d", &newDay);
+
+        // TODO DATA VALIDATION
+
+        // This will store the new date of format "YYYY-MM-DD" where the +3 includes the dashes and terminal symbol
+        char *newDate = malloc(sizeof(newYear) + sizeof(newMonth) + sizeof(newDay) + 3);
+        sprintf(newDate, "%d-%02d-%02d", newYear, newMonth,newDay);
+
+        strcpy(nodeToModify->dataItem.date, newDate);
+
+
+        
+        if(updateFile("w") == 0){
+            printf("\nEntry updated sucessfully");
+        }
+        
+        free(newDate);
+
+    } else if (choice == 2){
+        
+        double newAmount;
+        printf("\nEnter new amount: $");
+        validChoice = scanf("%lf",&newAmount);
+
+        // TODO Data validation
+        
+        nodeToModify->dataItem.amount = newAmount;
+        if(updateFile("w") == 0){
+            printf("\nEntry updated sucessfully");
+        }
+ 
+    }
+    
+    return 0;
 }
 
 
 
+void filterByMonth(){ // TODO
+
+    char year;
+    char month;
+    // char* res;
+
+    printf("\nPlease enter year (YYYY): ");
+
+    // Get user input for ID
+    int yearValidity = scanf("%s", &year);
+
+    printf("\nPlease enter month (1-12): ");
+
+    int monthValidity = scanf("%s", &month);
+
+    // Making sure that the input is an Integer
+    if(yearValidity != 0 || monthValidity != 0){
+        printf("Invalid input\n");
+
+    } else {
+        Node* temp = getStart();
+        while(temp){
+            // Making sure to skip printing the header nodes
+            if (temp->next == NULL ||temp->previous == NULL){
+            }else if( strcmp(strtok(temp->dataItem.date, "-"), &year) == 0){
+                //  strcasecmp(strtok(temp->dataItem.date, "-"), year) == 0 &&  strcasecmp(strtok(NULL, "-"), month) == 0
+                printNode(temp, 0);
+             
+            }
+            temp = temp->next;
+        }
+    
+    }
+
+}
 
 
 
@@ -160,7 +248,7 @@ int callChoice(int chosenNumber){
         modifyEntry(); 
         break;
     case 6:
-        printf("number is: %d \n", chosenNumber );
+        filterByMonth();
         break;
     default:
         printf("Invalid Input \n");
@@ -171,7 +259,7 @@ int callChoice(int chosenNumber){
     }
     
     char enterKey;
-    printf("\n Press any key then ENTER to continue: ");
+    printf("\nPress any key then ENTER to continue: ");
     scanf("%s", &enterKey);
 
     return 0;

@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I.
+CFLAGS=-Wall -g -I.
 DEPS = main.h budget.h data.h
 OBJ = main.o budget.o data.o ordering.o
 

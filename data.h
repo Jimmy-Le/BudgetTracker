@@ -2,6 +2,7 @@
 
 #define DATA_H
 
+
 typedef struct DataEntry{
     int entryID;
     char *date;
@@ -30,4 +31,6 @@ int parseData(char *fileName);
 int getData(char *fileName);
 void freeData(DataEntry *data);
 void freeNode(Node *node);
+char* convertBackToFile(Node *node);
+int updateFile(char *mode);
 #endif
