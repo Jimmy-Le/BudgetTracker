@@ -7,3 +7,7 @@
 107|2025-05-05|expense|Wants|Shopping|250.00
 108|2025-05-06|expense|Wants|Dining|75.00
 109|2025-05-07|expense|Needs|Phone Bill|60.00
+110|2025-05-30|expense|Needs|food|1230.00
+111|2025-05-30|income|passive|a|100.00
+112|2044-23-34|expense|p|r|400.00
+113|2025-05-30|expense|Wants|meow|200000.00

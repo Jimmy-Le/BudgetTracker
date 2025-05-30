@@ -9,7 +9,7 @@
 FILE *fptr;
 
 // The character we look for when parsing
-const char separator[2] = "|"; // use #Define
+#define SEPARATOR "|" // use #Define
 
 // These are the for storing the data from the files and later turned into a DataEntry struct
 int tempID;
@@ -20,7 +20,8 @@ char* tempDesc;
 double tempAmount;
 
 // This counter is used to figure out what collumn we are at for parsing the file
-int counter;                            
+int counter;         
+int firstAdd = 0;                   
 
 // Save the filename
 char* financeFilename;
@@ -28,6 +29,9 @@ char* financeFilename;
 // These are the Headers for the doubly linked list
 Node* start;
 Node* end;
+
+// This will be to generate a new bigger ID
+int maxID = 0;
 
 
 Node* getStart(){
@@ -172,13 +176,16 @@ int parseData(char *fileLine){
     counter = 0;
     char *res;
 
-    res = strtok(fileLine, separator);
+    res = strtok(fileLine, SEPARATOR);
     while (res != NULL){
 
         switch (counter)
         {
         case 0:                         // ID
             tempID = atoi(res);
+            if (tempID > maxID){
+                maxID = tempID;
+            }
             break;
         case 1:                         // Date
             tempDate = res;
@@ -200,7 +207,7 @@ int parseData(char *fileLine){
         }
 
         counter = counter + 1;
-        res = strtok(NULL, separator);
+        res = strtok(NULL, SEPARATOR);
     }
 
     Node* tempNode = createNode(tempID, tempDate, tempType, tempSubType, tempDesc, tempAmount);
@@ -264,7 +271,7 @@ char* convertBackToFile(Node *node){
 
     char *newLine = malloc(totalSize);
 
-    sprintf(newLine, "%d|%s|%s|%s|%s|%0.2f\n",
+    sprintf(newLine, "%d|%s|%s|%s|%s|%0.2f",
         node->dataItem.entryID,
         node->dataItem.date,
         node->dataItem.entryType,
@@ -276,17 +283,51 @@ char* convertBackToFile(Node *node){
     
 }
 
+int generateNewID(){
+    maxID = maxID + 1;
+    return maxID;
+}
+
+int addToFile(){
+    fptr = fopen(financeFilename, "a");
+    if (!fptr){
+        perror("Invalid File Name");
+        return 1;
+    }
+
+    
+    Node *temp = getEnd()->previous;
+
+    char* newLine = convertBackToFile(temp);
+    if(newLine){
+        if(firstAdd == 0){
+            fprintf(fptr, "\n%s\n", newLine);
+            firstAdd = 1;
+        } else {
+            fprintf(fptr, "%s\n", newLine);
+        }
+
+        free(newLine);
+        newLine = NULL;
+    }
+
+    fclose(fptr);
+    return 0;
+}
+
+
 
 // Updates the file based on the given mode
 // Mode "a": add new entry to the list
 // Mode "w": update the entire file with new modified entry
-int updateFile(char *mode){
+int updateFile(){
 
-    fptr = fopen(financeFilename, mode);
+    fptr = fopen(financeFilename, "w+");
     if (!fptr){
         perror("Invalid File Name");
-        exit(1);
+        return 1;
     }
+
     
     Node *temp = getStart();
     while(temp){
@@ -295,7 +336,10 @@ int updateFile(char *mode){
         }else{
             char* newLine = convertBackToFile(temp);
             if(newLine){
-                fprintf(fptr, "%s", newLine);
+                if(firstAdd == 0){
+                    firstAdd = 1;
+                }
+                fprintf(fptr, "%s\n", newLine);
                 free(newLine);
                 newLine = NULL;
             }

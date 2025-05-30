@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "data.h"
 
 
@@ -118,6 +119,94 @@ Node* getNodeIDChoice(){
 }
 
 
+int addEntry(){
+
+    char *dateAnswer = malloc(2);
+    
+    time_t currentTime;
+    time(&currentTime);
+
+    int newYear;
+    int newMonth;
+    int newDay;
+    char *newDate = malloc(10); // Year = 4, Month = 2, Day = 2, +2 for dashes + 1 for terminal
+    char *newType = malloc(10); // expenses = 7 , + 1 for terminal + 2 for emergency
+    char *newSubtype = malloc(10); // passive = 7 , + 1 for terminal + 2 for emergency
+    char *newDescription = malloc(25); // descriptions can be long
+
+    double newAmount;
+
+    printf("Adding Income/Expenses\n");
+    printf("------------------------\n");
+    printf("Use today's date? (y/n): ");
+    validChoice = scanf("%s", dateAnswer);
+
+    // Validating user input
+    if (validChoice != 1){
+        printf("\nInvalid input");
+        return 1;
+    } 
+    
+
+    // Setting up the Date
+    if (strcasecmp(dateAnswer, "y") == 0){
+        newYear = localtime(&currentTime)->tm_year + 1900;
+        newMonth = localtime(&currentTime)->tm_mon + 1;
+        newDay = localtime(&currentTime)->tm_mday;
+
+    } else if (strcasecmp(dateAnswer, "n") == 0){
+
+        int tripleValidation = 0;
+
+        printf("\nEnter new year (YYYY): ");
+        validChoice = scanf("%d",&newYear);
+        tripleValidation = tripleValidation + validChoice;
+
+        printf("\nEnter new month (MM): ");
+        validChoice = scanf("%d",&newMonth);
+        tripleValidation = tripleValidation + validChoice;
+
+        printf("\nEnter new day (DD): ");
+        validChoice = scanf("%d", &newDay);
+        tripleValidation = tripleValidation + validChoice;
+
+        // validChoice is valid when it is 1, thus if we add all of the valid choices we should get a total of 3
+        if(tripleValidation != 3){
+            printf("\nInvalid input");
+            return 1;
+        }
+
+    } else {
+        printf("\nInvalid input");
+        return 1;
+    }
+    
+    sprintf(newDate, "%d-%02d-%02d", newYear, newMonth,newDay);
+    // Set up Sections
+    // We'll assume a perfect user for now
+    printf("\nType (income/expense): ");
+    scanf("%s", newType);
+    printf("\nCategory: ");
+    scanf("%s", newSubtype);
+    printf("\nDescription: ");
+    scanf(" %[^\t\n]", newDescription);
+    printf("\nAmount: $");
+    scanf("%lf", &newAmount);
+
+    Node *newNode = createNode(generateNewID(),newDate,newType,newSubtype, newDescription,newAmount);
+    push(newNode);
+    if(addToFile() == 0){
+        printf("\nEntry added successfully with ID %d", newNode->dataItem.entryID);
+    }
+
+    free(dateAnswer);
+    free(newDate);
+    free(newType);
+    free(newDescription);
+    return 0;
+
+}
+
 
 
 int modifyEntry(){
@@ -178,7 +267,7 @@ int modifyEntry(){
         // TODO Data validation
         
         nodeToModify->dataItem.amount = newAmount;
-        if(updateFile("w") == 0){
+        if(updateFile() == 0){
             printf("\nEntry updated sucessfully");
         }
  
@@ -242,7 +331,7 @@ int callChoice(int chosenNumber){
         printf("number is: %d \n", chosenNumber );
         break;
     case 4:
-        printf("number is: %d \n", chosenNumber );
+        addEntry();
         break;
     case 5:
         modifyEntry(); 

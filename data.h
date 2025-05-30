@@ -32,5 +32,7 @@ int getData(char *fileName);
 void freeData(DataEntry *data);
 void freeNode(Node *node);
 char* convertBackToFile(Node *node);
-int updateFile(char *mode);
+int generateNewID();
+int addToFile();
+int updateFile();
 #endif
