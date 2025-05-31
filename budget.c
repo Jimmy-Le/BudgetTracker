@@ -4,6 +4,7 @@
 #include <string.h>
 #include <time.h>
 #include "data.h"
+#include "ordering.h"
 
 
 int choice;
@@ -89,6 +90,25 @@ void getExpenseDistribution(){
     printf("Net Balance: $%.2f \n", totalIncome - totalExpenses);
     printf("============================================= \n");
 }
+
+int sortingMenu(){
+
+    printf("Sort Menu\n");
+    printf("-----------\n");
+    printf("1. Sort by ID\n");
+    printf("2. Sort by Date\n");
+    printf("3. Sort by Amount\n");
+    printf("4. Sort by Description\n");
+
+    int res = getUserInput(1,4);
+
+    if(res == 0){
+        return 1;
+    }
+    sortByChoice(choice);
+    return 0;
+}
+
 
 
 
@@ -195,7 +215,7 @@ int addEntry(){
 
     Node *newNode = createNode(generateNewID(),newDate,newType,newSubtype, newDescription,newAmount);
     push(newNode);
-    if(addToFile() == 0){
+    if(updateFile() == 0){
         printf("\nEntry added successfully with ID %d", newNode->dataItem.entryID);
     }
 
@@ -328,7 +348,7 @@ int callChoice(int chosenNumber){
         getExpenseDistribution();
         break;
     case 3:
-        printf("number is: %d \n", chosenNumber );
+        sortingMenu();
         break;
     case 4:
         addEntry();
@@ -341,15 +361,16 @@ int callChoice(int chosenNumber){
         break;
     default:
         printf("Invalid Input \n");
+        break;
     case 7:
         printf("\nGoodbye and thanks for using our budget tracker app!!!\n\n");
         return 1;
         break;
     }
     
-    char enterKey;
+    char enterKey[10];
     printf("\nPress any key then ENTER to continue: ");
-    scanf("%s", &enterKey);
+    scanf("%s", enterKey);
 
     return 0;
 

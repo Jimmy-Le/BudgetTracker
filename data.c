@@ -29,6 +29,7 @@ char* financeFilename;
 // These are the Headers for the doubly linked list
 Node* start;
 Node* end;
+int elements = 0;
 
 // This will be to generate a new bigger ID
 int maxID = 0;
@@ -40,6 +41,10 @@ Node* getStart(){
 
 Node* getEnd(){
     return end;
+}
+
+int getListSize(){
+    return elements;
 }
 
 // Create the head and tail of the Linked List
@@ -105,7 +110,7 @@ void push(Node* newEntry){
 
     // Replace the Node stored in the end header to be the new Node
     end->previous = newEntry;
-
+    elements = elements + 1;
 }
 
 void printHeader(){
@@ -288,6 +293,12 @@ int generateNewID(){
     return maxID;
 }
 
+
+/// @brief 
+/// This function should append an entry to the file
+/// Unused for now due to possible bugs (adding extra new lines based on the previously saved file)
+/// Currently using updateFile() instead
+/// @return 
 int addToFile(){
     fptr = fopen(financeFilename, "a");
     if (!fptr){
@@ -295,7 +306,6 @@ int addToFile(){
         return 1;
     }
 
-    
     Node *temp = getEnd()->previous;
 
     char* newLine = convertBackToFile(temp);
@@ -306,11 +316,9 @@ int addToFile(){
         } else {
             fprintf(fptr, "%s\n", newLine);
         }
-
         free(newLine);
         newLine = NULL;
     }
-
     fclose(fptr);
     return 0;
 }

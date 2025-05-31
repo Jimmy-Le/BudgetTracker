@@ -7,14 +7,9 @@
 
 
 
-
-
-
-
-
-
 int main(int argc, char * argv[]) {
     int programOver = 0;
+
     // get data (from command line) (from data.c)
     getData(argv[1]);
     system("clear");
