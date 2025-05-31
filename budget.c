@@ -29,7 +29,7 @@ int printMenu() {
 
 
 // Get an input from the user and return their choice
-// if the choice is invalid, return 0
+// if the choice is invalid, return -1
 // bottom: the lower bound limit of the input
 // top: the upper bound limit of the input
 int getUserInput(int bottom, int top){
@@ -41,7 +41,7 @@ int getUserInput(int bottom, int top){
         system("clear");
 
         printf("Invalid input\n");
-        return 0;
+        return -1;
     }
     return choice;
 }
@@ -102,7 +102,7 @@ int sortingMenu(){
 
     int res = getUserInput(1,4);
 
-    if(res == 0){
+    if(res == -1){
         return 1;
     }
     sortByChoice(choice);
@@ -141,7 +141,7 @@ Node* getNodeIDChoice(){
 
 int addEntry(){
 
-    char *dateAnswer = malloc(2);
+    char *dateAnswer = malloc(3);
     
     time_t currentTime;
     time(&currentTime);
@@ -212,6 +212,10 @@ int addEntry(){
     scanf(" %[^\t\n]", newDescription);
     printf("\nAmount: $");
     scanf("%lf", &newAmount);
+    if (newAmount < 0){
+        printf("\nInvalid Input: Negative Number\n");
+        return 1;
+    }
 
     Node *newNode = createNode(generateNewID(),newDate,newType,newSubtype, newDescription,newAmount);
     push(newNode);
@@ -298,39 +302,67 @@ int modifyEntry(){
 
 
 
-void filterByMonth(){ // TODO
+int filterByMonth(){ // TODO
+    int year;
+    int month;
 
-    char year;
-    char month;
-    // char* res;
+    int storedYear;
+    int storedMonth;
 
-    printf("\nPlease enter year (YYYY): ");
+    char dateData[20];
+    char *parsedDate;
+
+    int itemCounter = 0;
+
+
+    printf("Filter by Month \n");
+    printf("------------------\n");
+    printf("Please enter year (YYYY): ");
 
     // Get user input for ID
-    int yearValidity = scanf("%s", &year);
-
-    printf("\nPlease enter month (1-12): ");
-
-    int monthValidity = scanf("%s", &month);
-
-    // Making sure that the input is an Integer
-    if(yearValidity != 0 || monthValidity != 0){
-        printf("Invalid input\n");
-
-    } else {
-        Node* temp = getStart();
-        while(temp){
-            // Making sure to skip printing the header nodes
-            if (temp->next == NULL ||temp->previous == NULL){
-            }else if( strcmp(strtok(temp->dataItem.date, "-"), &year) == 0){
-                //  strcasecmp(strtok(temp->dataItem.date, "-"), year) == 0 &&  strcasecmp(strtok(NULL, "-"), month) == 0
-                printNode(temp, 0);
-             
-            }
-            temp = temp->next;
-        }
-    
+    year = getUserInput(0, 9999);
+    if (year < 0){
+        return 1;
     }
+
+    printf("Please enter month (1-12): ");
+
+    month = getUserInput(1,12);
+
+    if(month < 0){
+        return 1;
+    }
+ 
+    printf("\n");
+    printHeader();
+    Node* temp = getStart();
+    while(temp){
+        // Making sure to skip printing the header nodes
+        if (temp->next == NULL ||temp->previous == NULL){
+        }else{
+            
+            strncpy(dateData, temp->dataItem.date, sizeof(dateData));
+
+            parsedDate = strtok(dateData, "-");
+            storedYear = atoi(parsedDate);       
+
+            parsedDate = strtok(NULL, "-");
+            storedMonth = atoi(parsedDate);
+
+            if(storedYear == year && storedMonth == month){
+                printNode(temp,0);
+                itemCounter = itemCounter + 1;
+            }
+            
+        }
+        temp = temp->next;
+    }
+    if(itemCounter == 0){
+        printf("No Data Found\n");
+    }
+
+    
+    return 0;
 
 }
 

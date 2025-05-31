@@ -14,12 +14,14 @@ int main(int argc, char * argv[]) {
     getData(argv[1]);
     system("clear");
     while(programOver == 0){
+        printf("\n");
         system("clear");
         printMenu();
         programOver = callChoice(getUserInput(1, 7));
     }
     
-
+    
+    freeAllNodes();
     // printData();
     return 0;
 }

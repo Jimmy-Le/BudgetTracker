@@ -1,9 +1,15 @@
-109|2025-05-01|income|Active|Paycheck|3000.00
-103|2025-05-02|income|Passive|Interest|120.00
-102|2025-05-03|income|Passive|Rental|850.00
-104|2025-05-03|income|Active|Services|450.00
-105|2025-05-03|expense|Needs|Groceries|200.00
-106|2025-05-04|expense|Needs|Electricity|180.00
-108|2025-05-05|expense|Wants|Shopping|250.00
-107|2025-05-06|expense|Wants|Dining|75.00
 101|2025-05-07|expense|Needs|Phone Bill|60.00
+102|2025-05-03|income|Passive|Rental|850.00
+103|2025-05-02|income|Passive|Interest|120.00
+104|2027-05-09|income|Active|Services|450.00
+105|2025-05-03|expense|Needs|Groceries|200.00
+106|2002-05-04|expense|Needs|Electricity|180.00
+107|2002-05-06|expense|Wants|Dining|75.00
+108|2025-03-05|expense|Wants|Shopping|250.00
+109|2025-05-01|income|Active|Paycheck|3000.00
+110|2025-05-09|income|passive|yes|200.00
+111|2023-03-23|income|passive|a|-100.00
+112|2025-05-31|1|1|1|0.00
+113|2025-05-31|expense|need|a|123.00
+114|2024-03-00|1|1|1|1000.00
+115|2025-05-31|1|1|1|1.00

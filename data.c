@@ -53,6 +53,8 @@ void createLinkedList(){
     start = (Node*) malloc(sizeof(Node)); 
     end = (Node*) malloc(sizeof(Node)); 
 
+
+
     // Check for memory allocation errors
     if(!start || !end){
         exit(1);
@@ -246,23 +248,46 @@ int getData(char * fileName){
 
 // This function free up dynamically allocated memory for all the char array in a DataEntry struct
 void freeData(DataEntry *data){
-    free(data->date);
-    free(data->entryType);
-    free(data->entrySubType);
-    free(data->entryDescription);
+    if(data->date != NULL){
+        free(data->date);
+    }
+    
+    if(data->entryType != NULL){
+        free(data->entryType);
+    }
+
+    if(data->entrySubType != NULL){
+        free(data->entrySubType);
+    }
+
+    if(data->entryDescription != NULL){
+        free(data->entryDescription);
+    }
 }
 
 
 // This function will free up allocated memory from a Node, including its data
 void freeNode(Node *node){
     // Make sure that the node isn't already freed
-    if (!node){
+    if (node == NULL){
         return;
     }
     freeData(&node->dataItem);
 
     free(node);
+}
 
+void freeAllNodes(){
+    Node *current = getStart();
+    Node *nextNode;
+
+    while(current != NULL){
+        nextNode = current->next;
+
+        freeNode(current);
+        current = nextNode;
+
+    }
 }
 
 char* convertBackToFile(Node *node){
