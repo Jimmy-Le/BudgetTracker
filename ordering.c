@@ -2,7 +2,6 @@
 #include <string.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "budget.h"
 #include "data.h"
 
 // Split the doubly linked list in half
@@ -98,15 +97,13 @@ int compareDates(Node *first, Node *second){
 
     // Otherwise, the first date is smaller or equal, return 1 (the first date)
     return 1;
-
 }
 
-
-
-
-
-
-// Function to merge two sorted doubly linked lists
+/// @brief Function to merge two sorted doubly linked lists
+/// @param first First Node to compare
+/// @param second  Second Node to compare
+/// @param mode integer the chosen method to sort
+/// @return Node that is smaller based on the sorting condition
 Node *merge( Node *first, Node *second, int mode) {
   
     // If either list is empty, return the other list
@@ -115,97 +112,82 @@ Node *merge( Node *first, Node *second, int mode) {
     if (second == NULL)
         return first;
 
-    // Pick the smaller value between first and 
-
     int sortCondition;
-    switch (mode){
-    case 1:
+    switch (mode){  // Set up the conditions to sort to
+    case 1:     // Sort by ID
         sortCondition = first->dataItem.entryID < second->dataItem.entryID;
         break;
-    case 2:
+    case 2:     // Sort by Date
         sortCondition = compareDates(first, second);
         break;
-    case 3:
+    case 3:     // Sort by Amount
         sortCondition = first->dataItem.amount < second->dataItem.amount;
         break;
-    case 4:
+    case 4:     // Sort by Description
         sortCondition = strcasecmp(first->dataItem.entryDescription, second->dataItem.entryDescription) < 0;
         break;
-    default:
+    default:    // Other wrong inputs
         break;
     }
 
    // second nodes
     if (sortCondition) {
-      
-        // Recursively merge the rest of the lists and
-        // link the result to the current node
-        first->next = merge(first->next, second, mode);
+        first->next = merge(first->next, second, mode);         // Recursively merge the rest of the lists
         if (first->next != NULL) {
-            first->next->previous = first;
+            first->next->previous = first;                      // link the result to the current node
         }
+
         first->previous = NULL;
         return first;
     }
     else {
-      
-        // Recursively merge the rest of the lists and
-        // link the result to the current node
-        second->next = merge(first, second->next, mode);
+        second->next = merge(first, second->next, mode);        // Recursively merge the rest of the lists and
         if (second->next != NULL) {
-            second->next->previous = second;
+            second->next->previous = second;                    // link the result to the current node
         }
         second->previous = NULL;
         return second;
     }
 }
 
-
-// Function to perform merge sort on a doubly linked list
+/// @brief Function to perform merge sort on a doubly linked list
+/// @param head Node that is immediately after the start sentinel
+/// @param mode integer choice that the user wants to sort to
+/// @return Node the new Head node
 Node *iDSort(Node *head, int mode) {
   
-    // Base case: if the list is empty or has only
-    // one node, it's already sorted
-    if (head == NULL || head->next == NULL) {
+    if (head == NULL || head->next == NULL) {               // If the list is empty or has only one node, it's already sorted
         return head;
     }
+    
+    Node *second = split(head);                             // Split the list into two
 
-    // Split the list into two halves
-    Node *second = split(head);
-
-    // Recursively sort each half
-    head = iDSort(head, mode);
+    head = iDSort(head, mode);                              // Recursively sort each half
     second = iDSort(second, mode);
 
-    // Merge the two sorted halves
-    return merge(head, second, mode);
+    return merge(head, second, mode);                       // Merge the two sorted halves
 }
 
-
-
-
-
-
+/// @brief Function gets called when the user decides to sort
+/// @param sortChoice integer sorting mode
 void sortByChoice(int sortChoice){
     
-    // Ensure that the Header blocks are not included in the sort
-    Node *temp = getStart()->next;
-    getEnd()->previous->next = NULL; // Remove the pointer to the end
-    getStart()->next = iDSort(temp, sortChoice);
-   
+    Node *temp = getStart()->next;                          // Ensure that the Header blocks are not included in the sort
+    getEnd()->previous->next = NULL;                        // Remove the pointer to the end
+
+    getStart()->next = iDSort(temp, sortChoice);            // Start sorting based on chosen method and get the new head node
+    getStart()->next->previous = getStart();                // Reattach the head node back to the start sentinel
+
     
-
-
-    getStart()->next->previous = getStart();
-
-    // Get to the tail node and attach the End Node to it
-    temp = getStart();
-    while(temp->next != NULL){
+    temp = getStart();                                 
+    while(temp->next != NULL){                              // Find the new tail node
         temp = temp->next;
     }
-    temp->next = getEnd();
-    getEnd()->previous = temp;
+
+    temp->next = getEnd();                                  // Reattach the end sentinel to the tail node
+    getEnd()->previous = temp;                              // Reattach the new tail node to the end sentinel
+    
     system("clear");
-    printData();
+    printData();                                            // Display the sorted results
 }
 
